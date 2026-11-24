@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityConnect | Smart City Portal</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Poppins"', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            950: '#0c203b',
+                            900: '#102b4e',
+                            800: '#176a91',
+                        },
+                        cyanaccent: {
+                            400: '#48e1ed',
+                            500: '#36d2e0',
+                            600: '#159bb3',
+                        },
+                        icebg: {
+                            50: '#f3f7fc',
+                            100: '#e7f5fa',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-icebg-50 text-[#172b46] font-sans antialiased selection:bg-cyanaccent-500 selection:text-navy-900 overflow-x-hidden">
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="sticky top-0 z-40 bg-navy-900/95 backdrop-blur-md text-white border-b border-white/10 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <a href="#home" class="text-2xl font-bold tracking-tight flex items-center gap-1.5">
+                City<span class="text-cyanaccent-400">Connect.</span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-7 text-xs lg:text-sm font-medium text-[#d8e6f5]">
+                <a href="#home" class="hover:text-cyanaccent-400 transition-colors">Home</a>
+                <a href="#services" class="hover:text-cyanaccent-400 transition-colors">Services</a>
+                <a href="#transport" class="hover:text-cyanaccent-400 transition-colors">Transport</a>
+                <a href="#locations" class="hover:text-cyanaccent-400 transition-colors">Locations</a>
+                <a href="#emergency" class="hover:text-cyanaccent-400 transition-colors">Emergency</a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3">
+                <button 
+                    onclick="openReportModal()" 
+                    class="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all cursor-pointer"
+                >
+                    📝 Report Issue
+                </button>
+                <a 
+                    href="#services" 
+                    class="bg-cyanaccent-500 hover:bg-cyanaccent-400 text-navy-900 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-all"
+                >
+                    Explore City
+                </a>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Strip -->
+        <nav class="md:hidden flex justify-around border-t border-white/10 py-2.5 px-2 text-xs text-[#d8e6f5] bg-navy-950/60">
+            <a href="#home" class="hover:text-cyanaccent-400">Home</a>
+            <a href="#services" class="hover:text-cyanaccent-400">Services</a>
+            <a href="#transport" class="hover:text-cyanaccent-400">Transport</a>
+            <a href="#locations" class="hover:text-cyanaccent-400">Locations</a>
+            <a href="#emergency" class="hover:text-cyanaccent-400">Emergency</a>
+        </nav>
+    </header>
+
+    <!-- ================= HERO SECTION ================= -->
+    <section id="home" class="bg-gradient-to-br from-navy-900 via-[#144a70] to-navy-800 text-white py-14 sm:py-20 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10">
+            <!-- Hero Content -->
+            <div class="flex-1 text-center lg:text-left">
+                <span class="inline-flex items-center gap-2 text-cyanaccent-400 tracking-[0.2em] text-xs font-semibold uppercase bg-white/10 px-3.5 py-1.5 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-cyanaccent-400 animate-ping"></span>
+                    Welcome to the Future
+                </span>
+
+                <h1 class="text-3xl sm:text-5xl lg:text-[50px] font-bold leading-tight my-5">
+                    Building A <span class="text-cyanaccent-400">Smarter City</span> For Everyone.
+                </h1>
+
+                <p class="text-[#d4e7f6] text-sm sm:text-base leading-relaxed max-w-xl mx-auto lg:mx-0">
+                    Experience a connected city where technology, innovation, and citizens come together to create a better tomorrow. Access live civic utilities, smart mobility, and emergency helplines in one portal.
+                </p>
+
+                <div class="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
+                    <a href="#services" class="px-6 py-3.5 bg-cyanaccent-500 hover:bg-cyanaccent-400 text-navy-900 font-semibold text-sm rounded-xl shadow-lg transition-all">
+                        Explore Services →
+                    </a>
+                    <a href="#locations" class="px-6 py-3.5 border border-white/60 hover:bg-white/10 text-white font-medium text-sm rounded-xl transition-all">
+                        Discover City
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero Visual -->
+            <div class="flex-1 w-full">
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-white/15">
+                    <img 
+                        src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=900&auto=format&fit=crop&q=80" 
+                        onerror="this.onerror=null;this.src='https://placehold.co/800x480/102b4e/36d2e0?text=Smart+City+Infrastructure';"
+                        alt="Modern Smart City" 
+                        class="w-full h-64 sm:h-80 object-cover"
+                    >
+                    <!-- Live Telemetry Pill -->
+                    <div class="absolute bottom-4 left-4 right-4 sm:right-auto bg-navy-950/90 backdrop-blur-md border border-white/15 px-4 py-3 rounded-xl flex items-center gap-4 text-xs">
+                        <div>
+                            <p class="text-gray-400">Air Quality</p>
+                            <p class="text-emerald-400 font-bold">AQI 42 • Good</p>
+                        </div>
+                        <div class="h-7 w-px bg-white/15"></div>
+                        <div>
+                            <p class="text-gray-400">Grid Uptime</p>
+                            <p class="text-cyanaccent-400 font-bold">99.98% Active</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CITY STATISTICS ================= -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 -mt-8 relative z-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="bg-white p-6 text-center rounded-2xl shadow-md border border-slate-100">
+                <span class="text-3xl">👥</span>
+                <h2 class="text-cyanaccent-600 text-2xl sm:text-3xl font-bold my-2">12.5L</h2>
+                <p class="text-gray-500 text-xs font-medium">City Population</p>
+            </div>
+
+            <div class="bg-white p-6 text-center rounded-2xl shadow-md border border-slate-100">
+                <span class="text-3xl">🏙️</span>
+                <h2 class="text-cyanaccent-600 text-2xl sm:text-3xl font-bold my-2">250+</h2>
+                <p class="text-gray-500 text-xs font-medium">Smart Buildings</p>
+            </div>
+
+            <div class="bg-white p-6 text-center rounded-2xl shadow-md border border-slate-100">
+                <span class="text-3xl">🌳</span>
+                <h2 class="text-cyanaccent-600 text-2xl sm:text-3xl font-bold my-2">85%</h2>
+                <p class="text-gray-500 text-xs font-medium">Green Coverage</p>
+            </div>
+
+            <div class="bg-white p-6 text-center rounded-2xl shadow-md border border-slate-100">
+                <span class="text-3xl">🚍</span>
+                <h2 class="text-cyanaccent-600 text-2xl sm:text-3xl font-bold my-2">500+</h2>
+                <p class="text-gray-500 text-xs font-medium">Public Transport Vehicles</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SMART CITY SERVICES ================= -->
+    <section id="services" class="py-16 px-4 sm:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-navy-900">Smart City Services</h2>
+            <p class="text-[#7b8a9b] text-xs sm:text-sm mt-2">Everything you need, available in one place</p>
+        </div>
+
+        <!-- Interactive Search & Category Filter Bar -->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 bg-white p-4 rounded-2xl shadow-xs border border-slate-100">
+            <div class="relative w-full md:w-80">
+                <input 
+                    type="text" 
+                    id="serviceSearch" 
+                    onkeyup="filterServices()"
+                    placeholder="Search services (e.g., water, metro, health)..." 
+                    class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-icebg-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyanaccent-600"
+                >
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-2">
+                <button onclick="setServiceCategory('All')" data-cat="All" class="srv-cat-btn bg-navy-900 text-white px-3.5 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer">All</button>
+                <button onclick="setServiceCategory('Civic')" data-cat="Civic" class="srv-cat-btn bg-icebg-50 text-navy-900 hover:bg-icebg-100 px-3.5 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer">Civic & Utilities</button>
+                <button onclick="setServiceCategory('Mobility')" data-cat="Mobility" class="srv-cat-btn bg-icebg-50 text-navy-900 hover:bg-icebg-100 px-3.5 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer">Mobility</button>
+                <button onclick="setServiceCategory('Welfare')" data-cat="Welfare" class="srv-cat-btn bg-icebg-50 text-navy-900 hover:bg-icebg-100 px-3.5 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer">Health & Education</button>
+            </div>
+        </div>
+
+        <!-- Services Grid -->
+        <div id="servicesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Populated via JS -->
+        </div>
+    </section>
+
+    <!-- ================= TRANSPORTATION ================= -->
+    <section id="transport" class="bg-icebg-100 py-16 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl sm:text-3xl font-bold text-navy-900">Smart Transportation 🚍</h2>
+                <p class="text-[#7b8a9b] text-xs sm:text-sm mt-2">Travel smarter, faster and safer across every corridor</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all">
+                    <img 
+                        src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=600&auto=format&fit=crop&q=80" 
+                        onerror="this.onerror=null;this.src='https://placehold.co/600x360/102b4e/36d2e0?text=City+Bus+Services';"
+                        alt="City Bus" 
+                        class="w-full h-48 object-cover"
+                    >
+                    <div class="p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-base sm:text-lg font-bold text-navy-900">City Bus Services</h3>
+                            <span class="text-[11px] font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">Live GPS</span>
+                        </div>
+                        <p class="text-xs text-[#7b8a9b] leading-relaxed">Affordable electric public transport with convenient city routes and real-time arrival displays.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all">
+                    <img 
+                        src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&auto=format&fit=crop&q=80" 
+                        onerror="this.onerror=null;this.src='https://placehold.co/600x360/102b4e/36d2e0?text=Metro+Connectivity';"
+                        alt="Metro Train" 
+                        class="w-full h-48 object-cover"
+                    >
+                    <div class="p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-base sm:text-lg font-bold text-navy-900">Metro Connectivity</h3>
+                            <span class="text-[11px] font-semibold bg-cyan-100 text-cyan-800 px-2.5 py-0.5 rounded-full">Every 4 Mins</span>
+                        </div>
+                        <p class="text-xs text-[#7b8a9b] leading-relaxed">High-speed, contactless urban rail transportation connecting residential hubs to business districts.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all">
+                    <img 
+                        src="https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=600&auto=format&fit=crop&q=80" 
+                        onerror="this.onerror=null;this.src='https://placehold.co/600x360/102b4e/36d2e0?text=Smart+Road+Network';"
+                        alt="City Roads" 
+                        class="w-full h-48 object-cover"
+                    >
+                    <div class="p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-base sm:text-lg font-bold text-navy-900">Smart Road Network</h3>
+                            <span class="text-[11px] font-semibold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full">AI Signals</span>
+                        </div>
+                        <p class="text-xs text-[#7b8a9b] leading-relaxed">Adaptive traffic signal management, dedicated cycle tracks, and smart EV charging corridors.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= HEALTHCARE AND EDUCATION ================= -->
+    <section id="hospitals" class="py-16 px-4 sm:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl sm:text-3xl font-bold text-navy-900">Healthcare & Education</h2>
+            <p class="text-[#7b8a9b] text-xs sm:text-sm mt-2">Building a healthier and smarter community</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="bg-white p-6 rounded-2xl shadow-xs border-b-4 border-transparent hover:border-cyanaccent-500 hover:-translate-y-1.5 transition-all">
+                <div class="text-3xl mb-3">🏥</div>
+                <h3 class="text-base font-bold text-navy-900 mb-2">City General Hospital</h3>
+                <p class="text-xs text-[#78879a] leading-relaxed mb-4">24/7 multispeciality healthcare, trauma center, and emergency medical facilities.</p>
+                <a href="#emergency" class="text-cyanaccent-600 text-xs font-semibold hover:underline">View Emergency Info →</a>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-xs border-b-4 border-transparent hover:border-cyanaccent-500 hover:-translate-y-1.5 transition-all">
+                <div class="text-3xl mb-3">🩺</div>
+                <h3 class="text-base font-bold text-navy-900 mb-2">Community Health Centre</h3>
+                <p class="text-xs text-[#78879a] leading-relaxed mb-4">Accessible neighbourhood medical support, diagnostics, and primary healthcare services.</p>
+                <a href="#emergency" class="text-cyanaccent-600 text-xs font-semibold hover:underline">View Details →</a>
+            </div>
+
+            <div id="education" class="bg-white p-6 rounded-2xl shadow-xs border-b-4 border-transparent hover:border-cyanaccent-500 hover:-translate-y-1.5 transition-all">
+                <div class="text-3xl mb-3">🏫</div>
+                <h3 class="text-base font-bold text-navy-900 mb-2">Smart Public Schools</h3>
+                <p class="text-xs text-[#78879a] leading-relaxed mb-4">Interactive digital classrooms, STEM labs, and inclusive quality K-12 education.</p>
+                <a href="#locations" class="text-cyanaccent-600 text-xs font-semibold hover:underline">Locate Campuses →</a>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-xs border-b-4 border-transparent hover:border-cyanaccent-500 hover:-translate-y-1.5 transition-all">
+                <div class="text-3xl mb-3">🎓</div>
+                <h3 class="text-base font-bold text-navy-900 mb-2">City University</h3>
+                <p class="text-xs text-[#78879a] leading-relaxed mb-4">Higher education, urban innovation research, and skill development opportunities.</p>
+                <a href="#locations" class="text-cyanaccent-600 text-xs font-semibold hover:underline">Explore District →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PUBLIC SERVICES ================= -->
+    <section id="public" class="bg-icebg-100 py-16 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl sm:text-3xl font-bold text-navy-900">Public Services 🏛️</h2>
+                <p class="text-[#7b8a9b] text-xs sm:text-sm mt-2">Simple and accessible civic utilities for every citizen</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div onclick="openReportModal('Water Supply')" class="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-xs hover:shadow-md transition-all cursor-pointer">
+                    <span class="text-3xl bg-icebg-50 p-3 rounded-xl">💧</span>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-bold text-navy-900">Water Supply</h3>
+                        <p class="text-[#8794a4] text-xs mt-0.5">24x7 metered water services & maintenance</p>
+                    </div>
+                </div>
+
+                <div onclick="openReportModal('Electricity')" class="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-xs hover:shadow-md transition-all cursor-pointer">
+                    <span class="text-3xl bg-icebg-50 p-3 rounded-xl">⚡</span>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-bold text-navy-900">Electricity</h3>
+                        <p class="text-[#8794a4] text-xs mt-0.5">Smart grid power supply & outage assistance</p>
+                    </div>
+                </div>
+
+                <div onclick="openReportModal('Waste Management')" class="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-xs hover:shadow-md transition-all cursor-pointer">
+                    <span class="text-3xl bg-icebg-50 p-3 rounded-xl">🗑️</span>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-bold text-navy-900">Waste Management</h3>
+                        <p class="text-[#8794a4] text-xs mt-0.5">Automated collection & zero-waste recycling</p>
+                    </div>
+                </div>
+
+                <div onclick="openReportModal('Municipal Office')" class="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-xs hover:shadow-md transition-all cursor-pointer">
+                    <span class="text-3xl bg-icebg-50 p-3 rounded-xl">🏢</span>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-bold text-navy-900">Municipal Office</h3>
+                        <p class="text-[#8794a4] text-xs mt-0.5">Certificates, property tax & citizen services</p>
+                    </div>
+                </div>
+
+                <div onclick="openReportModal('Digital Services')" class="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-xs hover:shadow-md transition-all cursor-pointer">
+                    <span class="text-3xl bg-icebg-50 p-3 rounded-xl">💻</span>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-bold text-navy-900">Digital Services</h3>
+                        <p class="text-[#8794a4] text-xs mt-0.5">Public Wi-Fi hotspots & online e-Governance</p>
+                    </div>
+                </div>
+
+                <div onclick="openReportModal('Public Parks')" class="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-xs hover:shadow-md transition-all cursor-pointer">
+                    <span class="text-3xl bg-icebg-50 p-3 rounded-xl">🌳</span>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-bold text-navy-900">Public Parks</h3>
+                        <p class="text-[#8794a4] text-xs mt-0.5">Maintained green spaces & open-air gyms</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= IMPORTANT LOCATIONS ================= -->
+    <section id="locations" class="py-16 px-4 sm:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl sm:text-3xl font-bold text-navy-900">Important City Locations 📍</h2>
+            <p class="text-[#7b8a9b] text-xs sm:text-sm mt-2">Discover popular destinations and hubs around the city</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all">
+                <img 
+                    src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=600&auto=format&fit=crop&q=80" 
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x380/102b4e/36d2e0?text=City+Centre';"
+                    alt="City Centre" 
+                    class="w-full h-48 object-cover"
+                >
+                <div class="p-5">
+                    <h3 class="text-base font-bold text-navy-900">City Centre</h3>
+                    <p class="text-[#78879a] text-xs mt-1.5">Central business, tech parks, shopping, and commercial district.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all">
+                <img 
+                    src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600&auto=format&fit=crop&q=80" 
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x380/102b4e/36d2e0?text=Green+Park';"
+                    alt="City Park" 
+                    class="w-full h-48 object-cover"
+                >
+                <div class="p-5">
+                    <h3 class="text-base font-bold text-navy-900">Green Park</h3>
+                    <p class="text-[#78879a] text-xs mt-1.5">Botanical gardens, lakeside walking trails, and family recreation.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all">
+                <img 
+                    src="https://images.unsplash.com/photo-1562774053-701939374585?w=600&auto=format&fit=crop&q=80" 
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x380/102b4e/36d2e0?text=Education+District';"
+                    alt="University" 
+                    class="w-full h-48 object-cover"
+                >
+                <div class="p-5">
+                    <h3 class="text-base font-bold text-navy-900">Education District</h3>
+                    <p class="text-[#78879a] text-xs mt-1.5">Universities, public libraries, and collaborative innovation hubs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= EMERGENCY INFORMATION ================= -->
+    <section id="emergency" class="bg-[#fff0f0] py-14 px-4 sm:px-8 border-y border-red-100">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-9">
+                <h2 class="text-2xl sm:text-3xl font-bold text-[#c82d38]">🚨 Emergency Information</h2>
+                <p class="text-gray-600 text-xs sm:text-sm mt-2">Important emergency helpline numbers in India. Click any card to copy number.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div onclick="copyHelpline('112', 'National Emergency / Police')" class="bg-white p-6 rounded-2xl text-center border border-[#ffdddd] shadow-xs hover:shadow-md transition-all cursor-pointer active:scale-95">
+                    <span class="text-3xl block">🚓</span>
+                    <h3 class="my-2.5 text-base font-semibold text-navy-900">Police / Emergency</h3>
+                    <h2 class="text-[#d52d3b] text-3xl font-bold tracking-wide">112</h2>
+                    <span class="inline-block mt-2 text-[11px] text-gray-400">Tap to copy</span>
+                </div>
+
+                <div onclick="copyHelpline('108', 'Ambulance Services')" class="bg-white p-6 rounded-2xl text-center border border-[#ffdddd] shadow-xs hover:shadow-md transition-all cursor-pointer active:scale-95">
+                    <span class="text-3xl block">🚑</span>
+                    <h3 class="my-2.5 text-base font-semibold text-navy-900">Ambulance</h3>
+                    <h2 class="text-[#d52d3b] text-3xl font-bold tracking-wide">108</h2>
+                    <span class="inline-block mt-2 text-[11px] text-gray-400">Tap to copy</span>
+                </div>
+
+                <div onclick="copyHelpline('101', 'Fire & Rescue')" class="bg-white p-6 rounded-2xl text-center border border-[#ffdddd] shadow-xs hover:shadow-md transition-all cursor-pointer active:scale-95">
+                    <span class="text-3xl block">🔥</span>
+                    <h3 class="my-2.5 text-base font-semibold text-navy-900">Fire Emergency</h3>
+                    <h2 class="text-[#d52d3b] text-3xl font-bold tracking-wide">101</h2>
+                    <span class="inline-block mt-2 text-[11px] text-gray-400">Tap to copy</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SMART CITY DASHBOARD ================= -->
+    <section id="dashboard" class="py-16 px-4 sm:px-8 max-w-7xl mx-auto">
+        <div class="bg-navy-900 text-white rounded-3xl p-7 sm:p-10 lg:p-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center shadow-xl">
+            <div class="text-center lg:text-left">
+                <h2 class="text-2xl sm:text-3xl font-bold mb-4">The Future Is A Smart City 🌆</h2>
+                <p class="text-[#c2d3e3] text-xs sm:text-sm leading-relaxed mb-6">
+                    Our vision is to create a sustainable, connected, and citizen-friendly city. By combining IoT sensors, renewable green energy, digital governance, and smart infrastructure, we continuously improve everyday life for every resident.
+                </p>
+                <div class="flex flex-wrap justify-center lg:justify-start gap-3">
+                    <a href="#services" class="px-6 py-3 bg-cyanaccent-500 hover:bg-cyanaccent-400 text-navy-900 font-semibold text-xs sm:text-sm rounded-xl transition-all">
+                        Explore More →
+                    </a>
+                    <button onclick="openReportModal()" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm rounded-xl border border-white/20 transition-all cursor-pointer">
+                        Submit Citizen Feedback
+                    </button>
+                </div>
+            </div>
+
+            <img 
+                src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=700&auto=format&fit=crop&q=80" 
+                onerror="this.onerror=null;this.src='https://placehold.co/700x400/176a91/ffffff?text=Smart+Urban+Skyline';"
+                alt="Smart City" 
+                class="w-full h-56 sm:h-64 object-cover rounded-2xl shadow-lg"
+            >
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-navy-950 text-white text-center py-10 px-4">
+        <h2 class="text-cyanaccent-500 text-2xl font-bold mb-2">CityConnect.</h2>
+        <p class="text-xs sm:text-sm text-[#b9c9dc]">Your City. Your Services. Your Future.</p>
+        <p class="text-xs text-[#b9c9dc]/70 mt-3">© 2026 CityConnect Smart City Portal. All Rights Reserved.</p>
+    </footer>
+
+    <!-- ================= CITIZEN ISSUE REPORT MODAL ================= -->
+    <div id="reportModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+            <button onclick="closeReportModal()" class="absolute top-4 right-4 w-9 h-9 rounded-xl bg-icebg-50 hover:bg-icebg-100 flex items-center justify-center text-gray-600 cursor-pointer">
+                ✕
+            </button>
+            <h3 class="text-xl font-bold text-navy-900 mb-1">Citizen Service Request</h3>
+            <p class="text-xs text-gray-500 mb-5">Report an issue or request municipal assistance.</p>
+
+            <form onsubmit="submitCitizenReport(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-navy-900 mb-1">Department / Category</label>
+                    <select id="reportCategory" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-icebg-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyanaccent-600">
+                        <option value="Water Supply">Water Supply</option>
+                        <option value="Electricity">Electricity & Streetlights</option>
+                        <option value="Waste Management">Waste Management</option>
+                        <option value="Roads & Traffic">Roads & Traffic</option>
+                        <option value="Municipal Office">Municipal Office</option>
+                        <option value="Public Parks">Public Parks</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-navy-900 mb-1">Ward / Locality</label>
+                    <input type="text" id="reportLocation" required placeholder="e.g., Sector 4, Main Avenue" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-icebg-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyanaccent-600">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-navy-900 mb-1">Description</label>
+                    <textarea id="reportDesc" rows="3" required placeholder="Briefly describe the issue or request..." class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-icebg-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyanaccent-600"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-navy-900 hover:bg-cyanaccent-600 text-white font-semibold text-xs sm:text-sm rounded-xl transition-colors cursor-pointer">
+                    Submit Ticket
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= TOAST NOTIFICATION ================= -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        const servicesData = [
+            { icon: "🏥", title: "Healthcare", category: "Welfare", desc: "Find nearby hospitals, clinics, emergency care and healthcare facilities.", link: "#hospitals", cta: "Explore Healthcare →" },
+            { icon: "🎓", title: "Education", category: "Welfare", desc: "Discover schools, colleges, universities and digital learning centres.", link: "#education", cta: "Explore Education →" },
+            { icon: "🚆", title: "Transportation", category: "Mobility", desc: "Get information about buses, metro, railway stations and smart mobility.", link: "#transport", cta: "Explore Transport →" },
+            { icon: "🏛️", title: "Public Services", category: "Civic", desc: "Access government services, water supply, electricity and citizen support.", link: "#public", cta: "Explore Services →" },
+            { icon: "🌱", title: "Environment", category: "Civic", desc: "Explore waste management, clean energy and green city initiatives.", link: "#dashboard", cta: "Learn More →" },
+            { icon: "🚨", title: "Emergency Help", category: "Welfare", desc: "Quickly find emergency contacts and essential safety information.", link: "#emergency", cta: "Get Help →" },
+            { icon: "💧", title: "Water Management", category: "Civic", desc: "Information about water supply, conservation and public facilities.", link: "#public", cta: "Learn More →" },
+            { icon: "💡", title: "Smart Technology", category: "Mobility", desc: "Discover smart lighting, digital connectivity and city innovation.", link: "#dashboard", cta: "Learn More →" }
+        ];
+
+        let selectedServiceCat = "All";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderServices();
+        });
+
+        function renderServices() {
+            const grid = document.getElementById("servicesGrid");
+            const query = document.getElementById("serviceSearch").value.toLowerCase();
+
+            const filtered = servicesData.filter(s => {
+                const matchCat = selectedServiceCat === "All" || s.category === selectedServiceCat;
+                const matchText = s.title.toLowerCase().includes(query) || s.desc.toLowerCase().includes(query);
+                return matchCat && matchText;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-2xl text-gray-500 text-sm">No matching smart city services found.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(s => `
+                <div class="bg-white p-6 rounded-2xl shadow-xs border-b-4 border-transparent hover:border-cyanaccent-500 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="text-3xl mb-3">${s.icon}</div>
+                        <h3 class="text-base sm:text-lg font-bold text-navy-900 mb-2">${s.title}</h3>
+                        <p class="text-xs text-[#78879a] leading-relaxed">${s.desc}</p>
+                    </div>
+                    <a href="${s.link}" class="inline-block mt-4 text-cyanaccent-600 hover:text-navy-900 text-xs font-semibold">
+                        ${s.cta}
+                    </a>
+                </div>
+            `).join("");
+        }
+
+        function setServiceCategory(cat) {
+            selectedServiceCat = cat;
+            document.querySelectorAll(".srv-cat-btn").forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.classList.remove("bg-icebg-50", "text-navy-900", "hover:bg-icebg-100");
+                    btn.classList.add("bg-navy-900", "text-white");
+                } else {
+                    btn.classList.remove("bg-navy-900", "text-white");
+                    btn.classList.add("bg-icebg-50", "text-navy-900", "hover:bg-icebg-100");
+                }
+            });
+            renderServices();
+        }
+
+        function filterServices() {
+            renderServices();
+        }
+
+        // Citizen Report Modal Controls
+        function openReportModal(category = "") {
+            const modal = document.getElementById("reportModal");
+            if (category) {
+                const select = document.getElementById("reportCategory");
+                for (let opt of select.options) {
+                    if (opt.value === category) {
+                        select.value = category;
+                        break;
+                    }
+                }
+            }
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        function closeReportModal() {
+            const modal = document.getElementById("reportModal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        function submitCitizenReport(e) {
+            e.preventDefault();
+            const cat = document.getElementById("reportCategory").value;
+            const ticketId = "CC-" + Math.floor(100000 + Math.random() * 900000);
+            document.getElementById("reportLocation").value = "";
+            document.getElementById("reportDesc").value = "";
+            closeReportModal();
+            showToast(`Ticket #${ticketId} created for ${cat}!`);
+        }
+
+        // Copy Helpline Number using execCommand fallback
+        function copyHelpline(number, label) {
+            const tempInput = document.createElement("input");
+            tempInput.value = number;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showToast(`Copied ${label} helpline (${number}) to clipboard!`);
+        }
+
+        // Non-blocking Toast Notification
+        function showToast(msg) {
+            const container = document.getElementById("toastContainer");
+            const toast = document.createElement("div");
+            toast.className = "bg-navy-900 border border-cyanaccent-500/40 text-white text-xs sm:text-sm px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-2.5 transition-all duration-300 opacity-0 translate-y-2";
+            toast.innerHTML = `<span class="text-cyanaccent-400">✔</span><span>${msg}</span>`;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove("opacity-0", "translate-y-2");
+            });
+
+            setTimeout(() => {
+                toast.classList.add("opacity-0", "translate-y-2");
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
