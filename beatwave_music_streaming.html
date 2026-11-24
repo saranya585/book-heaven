@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeatWave - Music Streaming</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tone.js for Synthesized Ambient Audio Playback -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <!-- Tailwind Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Poppins"', 'sans-serif'],
+                    },
+                    colors: {
+                        night: {
+                            950: '#101019',
+                            900: '#171724',
+                            850: '#1b1b29',
+                            800: '#20202e',
+                            700: '#29243a',
+                        },
+                        neonpurple: {
+                            400: '#c88aff',
+                            500: '#bd78ff',
+                            600: '#a45be0',
+                            900: '#302044',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-night-950 text-white font-sans antialiased selection:bg-neonpurple-500 selection:text-white overflow-x-hidden">
+
+    <div class="flex min-h-screen">
+
+        <!-- ================= SIDEBAR ================= -->
+        <aside id="sidebar" class="fixed top-0 left-0 z-40 h-screen w-60 bg-night-900 border-r border-white/5 p-6 flex flex-col justify-between transition-transform duration-300 -translate-x-full md:translate-x-0">
+            <div>
+                <!-- Brand Logo -->
+                <div class="flex items-center justify-between mb-10">
+                    <a href="#home" class="text-2xl font-bold text-neonpurple-500 tracking-tight flex items-center gap-2">
+                        <span>🎧</span> Beat<span class="text-white">Wave</span>
+                    </a>
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white p-1.5 rounded-lg">
+                        ✕
+                    </button>
+                </div>
+
+                <!-- Primary Menu -->
+                <h4 class="text-[#77778c] text-[11px] font-semibold tracking-[0.2em] uppercase mb-3 px-3">Menu</h4>
+                <nav class="space-y-1.5 mb-8">
+                    <a href="#home" onclick="setActiveNav(this)" class="nav-link active flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium bg-neonpurple-900 text-neonpurple-400 transition-all">
+                        <span>🏠</span> Home
+                    </a>
+                    <a href="#albums" onclick="setActiveNav(this)" class="nav-link flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-[#aaaabc] hover:bg-neonpurple-900/60 hover:text-neonpurple-400 transition-all">
+                        <span>💿</span> Albums
+                    </a>
+                    <a href="#artists" onclick="setActiveNav(this)" class="nav-link flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-[#aaaabc] hover:bg-neonpurple-900/60 hover:text-neonpurple-400 transition-all">
+                        <span>🎤</span> Artists
+                    </a>
+                    <a href="#playlists" onclick="setActiveNav(this)" class="nav-link flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-[#aaaabc] hover:bg-neonpurple-900/60 hover:text-neonpurple-400 transition-all">
+                        <span>🎵</span> Playlists
+                    </a>
+                </nav>
+
+                <!-- Library Menu -->
+                <h4 class="text-[#77778c] text-[11px] font-semibold tracking-[0.2em] uppercase mb-3 px-3">Your Library</h4>
+                <nav class="space-y-1.5">
+                    <a href="#popular" onclick="setActiveNav(this)" class="nav-link flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-[#aaaabc] hover:bg-neonpurple-900/60 hover:text-neonpurple-400 transition-all">
+                        <span>🔥</span> Popular Tracks
+                    </a>
+                    <a href="#recent" onclick="setActiveNav(this)" class="nav-link flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-[#aaaabc] hover:bg-neonpurple-900/60 hover:text-neonpurple-400 transition-all">
+                        <span>🕘</span> Recently Played
+                    </a>
+                    <button onclick="filterFavorites()" class="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-[#aaaabc] hover:bg-neonpurple-900/60 hover:text-neonpurple-400 transition-all cursor-pointer">
+                        <span class="flex items-center gap-3"><span>❤️</span> Favourites</span>
+                        <span id="favCountBadge" class="text-xs bg-neonpurple-900 text-neonpurple-400 px-2 py-0.5 rounded-full font-semibold">0</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Audio Synth Status Card -->
+            <div class="bg-night-800/80 border border-white/5 rounded-2xl p-4">
+                <div class="flex items-center gap-2 text-xs font-semibold text-neonpurple-400 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-neonpurple-500 animate-ping"></span>
+                    Hi-Fi Synth Engine
+                </div>
+                <p class="text-[11px] text-gray-400 leading-relaxed">Click any track to stream live melodic synth chords.</p>
+            </div>
+        </aside>
+
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 hidden md:hidden"></div>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="flex-1 md:ml-60 w-full px-4 sm:px-8 pt-6 pb-36">
+
+            <!-- TOPBAR -->
+            <header class="flex flex-wrap items-center justify-between gap-4 mb-8">
+                <div class="flex items-center gap-3 flex-1 max-w-md">
+                    <!-- Mobile Menu Toggle -->
+                    <button onclick="toggleSidebar()" class="md:hidden bg-night-800 hover:bg-night-700 text-white p-3 rounded-2xl border border-white/10 cursor-pointer" aria-label="Open menu">
+                        ☰
+                    </button>
+
+                    <!-- Search Input -->
+                    <div class="relative flex-1">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            onkeyup="handleSearch()"
+                            placeholder="Search songs, artists, albums..." 
+                            class="w-full bg-night-800 border border-[#333344] focus:border-neonpurple-500 pl-10 pr-4 py-2.5 rounded-2xl text-xs sm:text-sm text-white placeholder-gray-400 outline-none transition-all"
+                        >
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+                    </div>
+                </div>
+
+                <!-- Profile Pill -->
+                <div class="flex items-center gap-3 bg-night-900/90 border border-white/5 px-3.5 py-2 rounded-2xl">
+                    <span class="hidden sm:inline text-xs sm:text-sm text-gray-300 font-medium">Welcome, Music Lover!</span>
+                    <img 
+                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" 
+                        onerror="this.onerror=null;this.src='https://placehold.co/100x100/54258c/ffffff?text=ML';"
+                        alt="Profile" 
+                        class="w-9 h-9 rounded-full object-cover border-2 border-neonpurple-500"
+                    >
+                </div>
+            </header>
+
+            <!-- HERO BANNER -->
+            <section id="home" class="relative rounded-3xl bg-gradient-to-r from-[#54258c] via-[#a348b9] to-[#29234e] p-6 sm:p-10 lg:p-12 flex flex-col md:flex-row items-center justify-between gap-8 mb-10 overflow-hidden shadow-2xl">
+                <div class="text-center md:text-left z-10 max-w-xl">
+                    <p class="text-xs font-semibold tracking-[0.25em] text-[#e1c9ff] uppercase">Your Music. Your World.</p>
+                    <h1 class="text-3xl sm:text-5xl font-bold my-3 sm:my-4 leading-tight">
+                        Feel The <span class="text-[#f6c8ff]">Music.</span>
+                    </h1>
+                    <p class="text-sm sm:text-base text-gray-100/90 font-normal leading-relaxed">
+                        Discover new sounds, explore chart-topping artists, and stream curated playlists anytime, anywhere.
+                    </p>
+                    <div class="mt-6 flex flex-wrap justify-center md:justify-start gap-3">
+                        <button onclick="playTrackByIndex(0)" class="px-7 py-3 bg-white hover:bg-gray-100 text-[#71349c] font-bold text-sm rounded-2xl shadow-lg transition-transform active:scale-95 cursor-pointer flex items-center gap-2">
+                            <span>▶</span> Play Featured Mix
+                        </button>
+                        <a href="#popular" class="px-6 py-3 bg-black/25 hover:bg-black/40 text-white font-medium text-sm rounded-2xl border border-white/20 transition-all">
+                            Browse Tracks
+                        </a>
+                    </div>
+                </div>
+
+                <div class="relative z-10 shrink-0">
+                    <div id="heroVinyl" class="w-44 h-44 sm:w-56 sm:h-56 rounded-full p-2 bg-white/10 backdrop-blur-xs shadow-2xl transition-transform duration-700">
+                        <img 
+                            src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=500&auto=format&fit=crop&q=80" 
+                            onerror="this.onerror=null;this.src='https://placehold.co/400x400/302044/ffffff?text=BeatWave';"
+                            alt="Music studio" 
+                            class="w-full h-full object-cover rounded-full"
+                        >
+                    </div>
+                </div>
+            </section>
+
+            <!-- FEATURED ALBUMS -->
+            <section id="albums" class="mb-12">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-xl sm:text-2xl font-bold">Featured Albums 💿</h2>
+                    <a href="#popular" class="text-neonpurple-500 hover:text-neonpurple-400 text-xs sm:text-sm font-medium">View All →</a>
+                </div>
+
+                <div id="albumsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <!-- Populated via JS -->
+                </div>
+            </section>
+
+            <!-- POPULAR ARTISTS -->
+            <section id="artists" class="mb-12">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-xl sm:text-2xl font-bold">Popular Artists 🎤</h2>
+                    <button onclick="resetFilters()" class="text-neonpurple-500 hover:text-neonpurple-400 text-xs sm:text-sm font-medium cursor-pointer">Show All →</button>
+                </div>
+
+                <div id="artistsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+                    <!-- Populated via JS -->
+                </div>
+            </section>
+
+            <!-- YOUR PLAYLISTS -->
+            <section id="playlists" class="mb-12">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-xl sm:text-2xl font-bold">Your Playlists 🎵</h2>
+                    <span class="text-xs text-gray-400">Click a playlist to queue</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div onclick="playPlaylist('Party Hits')" class="flex items-center gap-4 bg-night-850 hover:bg-neonpurple-900/70 p-4 rounded-2xl border border-white/5 transition-all cursor-pointer group">
+                        <img 
+                            src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200&auto=format&fit=crop&q=80" 
+                            onerror="this.onerror=null;this.src='https://placehold.co/150x150/302044/ffffff?text=Party';"
+                            alt="Party Hits" 
+                            class="w-16 h-16 rounded-xl object-cover group-hover:scale-105 transition-transform"
+                        >
+                        <div class="flex-1">
+                            <h3 class="text-sm sm:text-base font-semibold group-hover:text-neonpurple-400">Party Hits</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">25 Songs • Dance</p>
+                        </div>
+                        <span class="w-9 h-9 rounded-full bg-neonpurple-500/20 text-neonpurple-400 flex items-center justify-center text-sm group-hover:bg-neonpurple-500 group-hover:text-white transition-colors">▶</span>
+                    </div>
+
+                    <div onclick="playPlaylist('Love Forever')" class="flex items-center gap-4 bg-night-850 hover:bg-neonpurple-900/70 p-4 rounded-2xl border border-white/5 transition-all cursor-pointer group">
+                        <img 
+                            src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=200&auto=format&fit=crop&q=80" 
+                            onerror="this.onerror=null;this.src='https://placehold.co/150x150/302044/ffffff?text=Love';"
+                            alt="Love Forever" 
+                            class="w-16 h-16 rounded-xl object-cover group-hover:scale-105 transition-transform"
+                        >
+                        <div class="flex-1">
+                            <h3 class="text-sm sm:text-base font-semibold group-hover:text-neonpurple-400">Love Forever</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">18 Songs • Romance</p>
+                        </div>
+                        <span class="w-9 h-9 rounded-full bg-neonpurple-500/20 text-neonpurple-400 flex items-center justify-center text-sm group-hover:bg-neonpurple-500 group-hover:text-white transition-colors">▶</span>
+                    </div>
+
+                    <div onclick="playPlaylist('Chill Vibes')" class="flex items-center gap-4 bg-night-850 hover:bg-neonpurple-900/70 p-4 rounded-2xl border border-white/5 transition-all cursor-pointer group">
+                        <img 
+                            src="https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=200&auto=format&fit=crop&q=80" 
+                            onerror="this.onerror=null;this.src='https://placehold.co/150x150/302044/ffffff?text=Chill';"
+                            alt="Chill Vibes" 
+                            class="w-16 h-16 rounded-xl object-cover group-hover:scale-105 transition-transform"
+                        >
+                        <div class="flex-1">
+                            <h3 class="text-sm sm:text-base font-semibold group-hover:text-neonpurple-400">Chill Vibes</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">30 Songs • Relax</p>
+                        </div>
+                        <span class="w-9 h-9 rounded-full bg-neonpurple-500/20 text-neonpurple-400 flex items-center justify-center text-sm group-hover:bg-neonpurple-500 group-hover:text-white transition-colors">▶</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- POPULAR TRACKS -->
+            <section id="popular" class="mb-12">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+                    <div>
+                        <h2 id="tracksHeading" class="text-xl sm:text-2xl font-bold">Popular Tracks 🔥</h2>
+                        <p id="tracksSubheading" class="text-xs text-gray-400 mt-0.5">Click any row to play instantly</p>
+                    </div>
+                    <button id="clearFilterBtn" onclick="resetFilters()" class="hidden text-xs font-semibold text-neonpurple-400 hover:underline cursor-pointer">
+                        Reset Filter
+                    </button>
+                </div>
+
+                <div id="trackListContainer" class="bg-night-850 rounded-2xl border border-white/5 divide-y divide-[#303040] px-3 sm:px-5">
+                    <!-- Tracks populated dynamically -->
+                </div>
+            </section>
+
+            <!-- RECENTLY PLAYED -->
+            <section id="recent" class="mb-10">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-xl sm:text-2xl font-bold">Recently Played 🕘</h2>
+                    <span class="text-xs text-gray-400">Auto-updated as you listen</span>
+                </div>
+
+                <div id="recentGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Populated via JS -->
+                </div>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="text-center text-gray-500 py-8 text-xs border-t border-white/5">
+                <p>© 2026 BeatWave Music. All Rights Reserved.</p>
+                <p class="mt-2 text-gray-400">Feel the beat. Live the music. 🎧</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- ================= FIXED BOTTOM MUSIC PLAYER ================= -->
+    <div id="player" class="fixed bottom-0 left-0 md:left-60 right-0 z-50 bg-night-800/95 backdrop-blur-md border-t border-[#383849] px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4 shadow-2xl">
+        
+        <!-- Currently Playing Metadata -->
+        <div class="flex items-center gap-3 w-auto sm:w-1/4 min-w-0">
+            <img 
+                id="playerCover"
+                src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=100&auto=format&fit=crop&q=80" 
+                onerror="this.onerror=null;this.src='https://placehold.co/100x100/54258c/ffffff?text=♪';"
+                alt="Current song" 
+                class="w-12 h-12 rounded-xl object-cover shrink-0 shadow-md"
+            >
+            <div class="min-w-0">
+                <h3 id="playerTitle" class="text-xs sm:text-sm font-semibold text-white truncate">Dreams Tonight</h3>
+                <p id="playerArtist" class="text-[11px] text-gray-400 truncate">Arijit Singh</p>
+            </div>
+            <button onclick="toggleCurrentFavorite()" id="playerFavBtn" class="hidden sm:inline-flex text-gray-400 hover:text-pink-500 transition-colors p-1.5 cursor-pointer" title="Toggle Favourite">
+                🤍
+            </button>
+        </div>
+
+        <!-- Playback Controls & Scrubber -->
+        <div class="flex-1 max-w-xl flex flex-col items-center">
+            <div class="flex items-center gap-5 sm:gap-7 mb-1.5">
+                <button onclick="prevTrack()" class="text-gray-300 hover:text-neonpurple-400 text-lg sm:text-xl transition-colors cursor-pointer" aria-label="Previous Track">
+                    ⏮
+                </button>
+                <button 
+                    id="mainPlayBtn"
+                    onclick="togglePlayPause()" 
+                    class="w-10 h-10 rounded-full bg-neonpurple-500 hover:bg-neonpurple-400 text-white flex items-center justify-center text-sm shadow-lg shadow-neonpurple-500/30 transition-transform active:scale-95 cursor-pointer"
+                    aria-label="Play or Pause"
+                >
+                    ▶
+                </button>
+                <button onclick="nextTrack()" class="text-gray-300 hover:text-neonpurple-400 text-lg sm:text-xl transition-colors cursor-pointer" aria-label="Next Track">
+                    ⏭
+                </button>
+            </div>
+
+            <div class="w-full flex items-center gap-2.5 text-[10px] sm:text-xs text-gray-400">
+                <span id="currentTimeLabel" class="w-8 text-right font-mono">0:00</span>
+                <div onclick="seekTrack(event)" class="flex-1 h-1.5 bg-gray-600 rounded-full overflow-hidden cursor-pointer group">
+                    <div id="progressFill" class="w-0 h-full bg-neonpurple-500 group-hover:bg-neonpurple-400 rounded-full transition-all duration-150"></div>
+                </div>
+                <span id="totalDurationLabel" class="w-8 font-mono">3:45</span>
+            </div>
+        </div>
+
+        <!-- Volume Control -->
+        <div class="hidden lg:flex items-center justify-end gap-3 w-1/4">
+            <button onclick="toggleMute()" id="volumeIcon" class="text-gray-300 hover:text-white text-lg cursor-pointer">🔊</button>
+            <input 
+                type="range" 
+                id="volumeSlider" 
+                min="0" 
+                max="100" 
+                value="75" 
+                oninput="updateVolume(this.value)"
+                class="w-24 accent-neonpurple-500 cursor-pointer h-1.5 bg-gray-600 rounded-lg"
+            >
+        </div>
+
+    </div>
+
+    <!-- ================= TOAST CONTAINER ================= -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // Dataset: Albums, Artists, Tracks, Recent
+        const albumsData = [
+            { title: "Midnight Dreams", meta: "Pop • 2026", image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&auto=format&fit=crop&q=80", trackIndex: 0 },
+            { title: "Golden Vibes", meta: "Electronic • 2026", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&auto=format&fit=crop&q=80", trackIndex: 1 },
+            { title: "Acoustic Soul", meta: "Acoustic • 2026", image: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=400&auto=format&fit=crop&q=80", trackIndex: 2 },
+            { title: "Night Party", meta: "Dance • 2026", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&auto=format&fit=crop&q=80", trackIndex: 3 }
+        ];
+
+        const artistsData = [
+            { name: "Arijit Singh", role: "Singer", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80" },
+            { name: "Taylor Swift", role: "Pop Artist", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80" },
+            { name: "Ed Sheeran", role: "Singer", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45d1d?w=300&auto=format&fit=crop&q=80" },
+            { name: "Selena Gomez", role: "Pop Artist", image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&auto=format&fit=crop&q=80" },
+            { name: "Justin Bieber", role: "Singer", image: "https://images.unsplash.com/photo-1504593811423-6dd665756598?w=300&auto=format&fit=crop&q=80" }
+        ];
+
+        const tracksData = [
+            { id: 1, title: "Dreams Tonight", artist: "Arijit Singh", durationSec: 225, durationStr: "3:45", notes: ["C4", "E4", "G4", "B4"], image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=150&auto=format&fit=crop&q=80" },
+            { id: 2, title: "Golden Hour", artist: "JVKE", durationSec: 205, durationStr: "3:25", notes: ["F4", "A4", "C5", "E5"], image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=150&auto=format&fit=crop&q=80" },
+            { id: 3, title: "Perfect", artist: "Ed Sheeran", durationSec: 250, durationStr: "4:10", notes: ["G3", "B3", "D4", "G4"], image: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=150&auto=format&fit=crop&q=80" },
+            { id: 4, title: "Night Changes", artist: "One Direction", durationSec: 230, durationStr: "3:50", notes: ["A3", "C4", "E4", "G4"], image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=150&auto=format&fit=crop&q=80" },
+            { id: 5, title: "Midnight Memories", artist: "One Direction", durationSec: 210, durationStr: "3:30", notes: ["D4", "F#4", "A4", "C#5"], image: "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=150&auto=format&fit=crop&q=80" },
+            { id: 6, title: "Love Story", artist: "Taylor Swift", durationSec: 235, durationStr: "3:55", notes: ["D4", "A4", "B4", "G4"], image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" }
+        ];
+
+        let recentlyPlayed = [
+            { title: "Love Story", artist: "Taylor Swift", image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=100&auto=format&fit=crop&q=80" },
+            { title: "Shape of You", artist: "Ed Sheeran", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&auto=format&fit=crop&q=80" },
+            { title: "Stay", artist: "Justin Bieber", image: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=100&auto=format&fit=crop&q=80" },
+            { title: "Closer", artist: "The Chainsmokers", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop&q=80" }
+        ];
+
+        // Player & Filter State
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+        let elapsedSeconds = 0;
+        let progressInterval = null;
+        let favorites = new Set([1]);
+        let filterMode = "all"; // 'all' | 'favorites' | 'artist'
+        let selectedArtist = "";
+        let searchQuery = "";
+        let isMuted = false;
+
+        // Tone.js Ambient Synth Setup
+        let synth = null;
+        let synthLoop = null;
+
+        function initAudioEngine() {
+            if (synth) return;
+            synth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.4, decay: 0.5, sustain: 0.4, release: 1.5 }
+            }).toDestination();
+            synth.volume.value = -10;
+        }
+
+        function startAmbientLoop(notes) {
+            try {
+                initAudioEngine();
+                if (Tone.context.state !== "running") {
+                    Tone.start();
+                }
+                if (synthLoop) {
+                    synthLoop.dispose();
+                }
+                let step = 0;
+                synthLoop = new Tone.Loop((time) => {
+                    const note = notes[step % notes.length];
+                    synth.triggerAttackRelease(note, "2n", time);
+                    step++;
+                }, "2n").start(0);
+                Tone.Transport.start();
+            } catch (e) {
+                console.warn("Audio context initialization deferred until interaction.");
+            }
+        }
+
+        function stopAmbientLoop() {
+            try {
+                if (Tone.Transport.state === "started") {
+                    Tone.Transport.pause();
+                }
+            } catch (e) {}
+        }
+
+        // Initialize UI
+        document.addEventListener("DOMContentLoaded", () => {
+            renderAlbums();
+            renderArtists();
+            renderTracks();
+            renderRecent();
+            updatePlayerMetadata();
+            updateFavoriteBadge();
+        });
+
+        // Render Albums
+        function renderAlbums() {
+            const container = document.getElementById("albumsGrid");
+            container.innerHTML = albumsData.map(album => `
+                <div onclick="playTrackByIndex(${album.trackIndex})" class="bg-night-850 hover:bg-night-700 p-4 rounded-2xl border border-white/5 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group">
+                    <div class="relative overflow-hidden rounded-xl mb-3">
+                        <img 
+                            src="${album.image}" 
+                            onerror="this.onerror=null;this.src='https://placehold.co/300x300/302044/ffffff?text=${encodeURIComponent(album.title)}';"
+                            alt="${album.title}" 
+                            class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                        >
+                        <button class="absolute bottom-2.5 right-2.5 w-10 h-10 rounded-full bg-neonpurple-500 text-white flex items-center justify-center shadow-lg opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
+                            ▶
+                        </button>
+                    </div>
+                    <h3 class="text-sm sm:text-base font-semibold text-white group-hover:text-neonpurple-400 truncate">${album.title}</h3>
+                    <p class="text-xs text-[#9999aa] mt-1">${album.meta}</p>
+                </div>
+            `).join("");
+        }
+
+        // Render Artists
+        function renderArtists() {
+            const container = document.getElementById("artistsGrid");
+            container.innerHTML = artistsData.map(artist => `
+                <div onclick="filterByArtist('${artist.name}')" class="text-center p-3 rounded-2xl hover:bg-night-850/70 transition-all cursor-pointer group">
+                    <img 
+                        src="${artist.image}" 
+                        onerror="this.onerror=null;this.src='https://placehold.co/200x200/54258c/ffffff?text=${encodeURIComponent(artist.name)}';"
+                        alt="${artist.name}" 
+                        class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover mx-auto border-3 border-neonpurple-600 group-hover:scale-105 transition-transform shadow-md"
+                    >
+                    <h3 class="text-sm font-semibold mt-3 group-hover:text-neonpurple-400">${artist.name}</h3>
+                    <p class="text-xs text-[#9999aa]">${artist.role}</p>
+                </div>
+            `).join("");
+        }
+
+        // Render Tracks
+        function renderTracks() {
+            const container = document.getElementById("trackListContainer");
+            const heading = document.getElementById("tracksHeading");
+            const clearBtn = document.getElementById("clearFilterBtn");
+
+            const filtered = tracksData.filter(track => {
+                const matchesSearch = track.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      track.artist.toLowerCase().includes(searchQuery.toLowerCase());
+                if (!matchesSearch) return false;
+                if (filterMode === "favorites") return favorites.has(track.id);
+                if (filterMode === "artist") return track.artist.toLowerCase().includes(selectedArtist.toLowerCase());
+                return true;
+            });
+
+            if (filterMode === "favorites") {
+                heading.textContent = "Your Favourite Tracks ❤️";
+                clearBtn.classList.remove("hidden");
+            } else if (filterMode === "artist") {
+                heading.textContent = `Tracks by ${selectedArtist} 🎤`;
+                clearBtn.classList.remove("hidden");
+            } else {
+                heading.textContent = "Popular Tracks 🔥";
+                clearBtn.classList.add("hidden");
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="py-10 text-center">
+                        <p class="text-sm text-gray-400">No tracks matched your selection.</p>
+                        <button onclick="resetFilters()" class="mt-3 px-4 py-2 bg-neonpurple-500 text-white text-xs font-medium rounded-xl cursor-pointer">Show All Tracks</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(track => {
+                const actualIndex = tracksData.findIndex(t => t.id === track.id);
+                const isCurrent = actualIndex === currentTrackIndex;
+                const isFav = favorites.has(track.id);
+
+                return `
+                    <div class="flex items-center justify-between py-3.5 gap-3 sm:gap-4 group hover:bg-white/[0.02] px-2 rounded-xl transition-colors">
+                        <div onclick="playTrackByIndex(${actualIndex})" class="flex items-center gap-3.5 flex-1 min-w-0 cursor-pointer">
+                            <div class="relative shrink-0">
+                                <img 
+                                    src="${track.image}" 
+                                    onerror="this.onerror=null;this.src='https://placehold.co/100x100/302044/ffffff?text=♪';"
+                                    alt="${track.title}" 
+                                    class="w-12 h-12 rounded-xl object-cover"
+                                >
+                                ${isCurrent && isPlaying ? `<span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-neonpurple-400 text-xs font-bold">▮▮</span>` : ""}
+                            </div>
+                            <div class="min-w-0">
+                                <h3 class="text-sm font-semibold truncate ${isCurrent ? 'text-neonpurple-400' : 'text-white group-hover:text-neonpurple-400'}">
+                                    ${track.title}
+                                </h3>
+                                <p class="text-xs text-[#9999aa] truncate">${track.artist}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 sm:gap-6 shrink-0">
+                            <button onclick="toggleFavorite(${track.id})" class="text-base hover:scale-110 transition-transform cursor-pointer" title="Favourite">
+                                ${isFav ? "❤️" : "🤍"}
+                            </button>
+                            <span class="text-xs text-[#9999aa] font-mono hidden xs:inline">${track.durationStr}</span>
+                            <button onclick="playTrackByIndex(${actualIndex})" class="w-8 h-8 rounded-full bg-neonpurple-900/80 hover:bg-neonpurple-500 text-neonpurple-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">
+                                ${isCurrent && isPlaying ? "⏸" : "▶"}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        // Render Recently Played
+        function renderRecent() {
+            const container = document.getElementById("recentGrid");
+            container.innerHTML = recentlyPlayed.slice(0, 4).map(item => `
+                <div class="flex items-center gap-3 bg-night-850 p-3 rounded-2xl border border-white/5">
+                    <img 
+                        src="${item.image}" 
+                        onerror="this.onerror=null;this.src='https://placehold.co/100x100/302044/ffffff?text=♪';"
+                        alt="${item.title}" 
+                        class="w-13 h-13 w-12 h-12 rounded-xl object-cover shrink-0"
+                    >
+                    <div class="min-w-0">
+                        <h3 class="text-xs sm:text-sm font-semibold truncate">${item.title}</h3>
+                        <p class="text-[11px] text-[#9999aa] truncate">${item.artist}</p>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        // Playback Controls
+        function playTrackByIndex(index) {
+            if (index === currentTrackIndex && isPlaying) {
+                togglePlayPause();
+                return;
+            }
+            currentTrackIndex = index;
+            elapsedSeconds = 0;
+            isPlaying = true;
+
+            const track = tracksData[currentTrackIndex];
+            // Add to recently played
+            recentlyPlayed = [
+                { title: track.title, artist: track.artist, image: track.image },
+                ...recentlyPlayed.filter(r => r.title !== track.title)
+            ];
+
+            updatePlayerMetadata();
+            renderTracks();
+            renderRecent();
+            startPlaybackTimer();
+            startAmbientLoop(track.notes);
+            showToast(`Now Playing: ${track.title} — ${track.artist}`);
+        }
+
+        function togglePlayPause() {
+            isPlaying = !isPlaying;
+            const track = tracksData[currentTrackIndex];
+
+            if (isPlaying) {
+                startPlaybackTimer();
+                startAmbientLoop(track.notes);
+            } else {
+                clearInterval(progressInterval);
+                stopAmbientLoop();
+            }
+            updatePlayerMetadata();
+            renderTracks();
+        }
+
+        function nextTrack() {
+            const nextIdx = (currentTrackIndex + 1) % tracksData.length;
+            playTrackByIndex(nextIdx);
+        }
+
+        function prevTrack() {
+            const prevIdx = (currentTrackIndex - 1 + tracksData.length) % tracksData.length;
+            playTrackByIndex(prevIdx);
+        }
+
+        function startPlaybackTimer() {
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                if (!isPlaying) return;
+                const track = tracksData[currentTrackIndex];
+                elapsedSeconds += 1;
+                if (elapsedSeconds >= track.durationSec) {
+                    nextTrack();
+                    return;
+                }
+                updateProgressUI();
+            }, 1000);
+        }
+
+        function seekTrack(event) {
+            const bar = event.currentTarget;
+            const rect = bar.getBoundingClientRect();
+            const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+            const track = tracksData[currentTrackIndex];
+            elapsedSeconds = Math.floor(ratio * track.durationSec);
+            updateProgressUI();
+        }
+
+        function updatePlayerMetadata() {
+            const track = tracksData[currentTrackIndex];
+            document.getElementById("playerCover").src = track.image;
+            document.getElementById("playerTitle").textContent = track.title;
+            document.getElementById("playerArtist").textContent = track.artist;
+            document.getElementById("totalDurationLabel").textContent = track.durationStr;
+            document.getElementById("mainPlayBtn").textContent = isPlaying ? "⏸" : "▶";
+            document.getElementById("playerFavBtn").textContent = favorites.has(track.id) ? "❤️" : "🤍";
+
+            const vinyl = document.getElementById("heroVinyl");
+            if (isPlaying) {
+                vinyl.classList.add("animate-spin");
+                vinyl.style.animationDuration = "12s";
+            } else {
+                vinyl.classList.remove("animate-spin");
+            }
+            updateProgressUI();
+        }
+
+        function updateProgressUI() {
+            const track = tracksData[currentTrackIndex];
+            const mins = Math.floor(elapsedSeconds / 60);
+            const secs = elapsedSeconds % 60;
+            document.getElementById("currentTimeLabel").textContent = `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+
+            const pct = Math.min(100, (elapsedSeconds / track.durationSec) * 100);
+            document.getElementById("progressFill").style.width = `${pct}%`;
+        }
+
+        // Volume Controls
+        function updateVolume(val) {
+            if (!synth) return;
+            const db = val == 0 ? -Infinity : (val / 100) * 20 - 20;
+            synth.volume.value = db;
+            document.getElementById("volumeIcon").textContent = val == 0 ? "🔇" : "🔊";
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const slider = document.getElementById("volumeSlider");
+            if (isMuted) {
+                updateVolume(0);
+                document.getElementById("volumeIcon").textContent = "🔇";
+            } else {
+                updateVolume(slider.value);
+                document.getElementById("volumeIcon").textContent = "🔊";
+            }
+        }
+
+        // Favourites & Filtering
+        function toggleFavorite(trackId) {
+            if (favorites.has(trackId)) {
+                favorites.delete(trackId);
+                showToast("Removed from Favourites");
+            } else {
+                favorites.add(trackId);
+                showToast("Added to Favourites ❤️");
+            }
+            updateFavoriteBadge();
+            updatePlayerMetadata();
+            renderTracks();
+        }
+
+        function toggleCurrentFavorite() {
+            const track = tracksData[currentTrackIndex];
+            toggleFavorite(track.id);
+        }
+
+        function updateFavoriteBadge() {
+            document.getElementById("favCountBadge").textContent = favorites.size;
+        }
+
+        function filterFavorites() {
+            filterMode = "favorites";
+            renderTracks();
+            document.getElementById("popular").scrollIntoView({ behavior: "smooth" });
+            closeMobileSidebar();
+        }
+
+        function filterByArtist(artistName) {
+            filterMode = "artist";
+            selectedArtist = artistName;
+            renderTracks();
+            document.getElementById("popular").scrollIntoView({ behavior: "smooth" });
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById("searchInput").value;
+            renderTracks();
+        }
+
+        function resetFilters() {
+            filterMode = "all";
+            selectedArtist = "";
+            searchQuery = "";
+            document.getElementById("searchInput").value = "";
+            renderTracks();
+        }
+
+        function playPlaylist(name) {
+            showToast(`Playing "${name}" playlist`);
+            playTrackByIndex(Math.floor(Math.random() * tracksData.length));
+        }
+
+        // Sidebar Mobile Navigation
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("sidebarOverlay");
+            const isClosed = sidebar.classList.contains("-translate-x-full");
+            if (isClosed) {
+                sidebar.classList.remove("-translate-x-full");
+                overlay.classList.remove("hidden");
+            } else {
+                sidebar.classList.add("-translate-x-full");
+                overlay.classList.add("hidden");
+            }
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("sidebarOverlay");
+            sidebar.classList.add("-translate-x-full");
+            overlay.classList.add("hidden");
+        }
+
+        function setActiveNav(element) {
+            document.querySelectorAll(".nav-link").forEach(link => {
+                link.classList.remove("bg-neonpurple-900", "text-neonpurple-400");
+                link.classList.add("text-[#aaaabc]");
+            });
+            element.classList.remove("text-[#aaaabc]");
+            element.classList.add("bg-neonpurple-900", "text-neonpurple-400");
+            closeMobileSidebar();
+        }
+
+        // Toast Notification Helper
+        function showToast(msg) {
+            const container = document.getElementById("toastContainer");
+            const toast = document.createElement("div");
+            toast.className = "bg-night-800 border border-neonpurple-500/40 text-white text-xs sm:text-sm px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 transition-all duration-300 opacity-0 translate-y-2";
+            toast.innerHTML = `<span class="text-neonpurple-400">🎵</span><span>${msg}</span>`;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove("opacity-0", "translate-y-2");
+            });
+
+            setTimeout(() => {
+                toast.classList.add("opacity-0", "translate-y-2");
+                setTimeout(() => toast.remove(), 300);
+            }, 2800);
+        }
+    </script>
+</body>
+</html>
